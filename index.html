@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VoluntAI Sync MVP</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select, button { margin: 5px; padding: 5px; }
+    table { margin-top: 20px; border-collapse: collapse; }
+    td, th { border: 1px solid black; padding: 8px; }
+  </style>
+</head>
+<body>
+
+<h1>VoluntAI Sync</h1>
+
+<h3>Add Volunteer</h3>
+<input id="vName" placeholder="Name">
+<select id="vTime">
+  <option>Morning</option>
+  <option>Afternoon</option>
+  <option>Evening</option>
+</select>
+<button onclick="addVolunteer()">Add</button>
+
+<h3>Add Task</h3>
+<input id="tName" placeholder="Task Name">
+<select id="tTime">
+  <option>Morning</option>
+  <option>Afternoon</option>
+  <option>Evening</option>
+</select>
+<button onclick="addTask()">Add</button>
+
+<h3>Dashboard</h3>
+<table id="table">
+  <tr>
+    <th>Task</th>
+    <th>Assigned To</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+</table>
+
+<h3 id="prediction"></h3>
+
+<script>
+let volunteers = [];
+let tasks = [];
+
+function addVolunteer() {
+  const name = document.getElementById("vName").value;
+  const time = document.getElementById("vTime").value;
+
+  volunteers.push({ name, time });
+  alert("Volunteer added!");
+}
+
+function addTask() {
+  const name = document.getElementById("tName").value;
+  const time = document.getElementById("tTime").value;
+
+  let assigned = "None";
+
+  for (let v of volunteers) {
+    if (v.time === time) {
+      assigned = v.name;
+      break;
+    }
+  }
+
+  tasks.push({
+    name,
+    time,
+    assigned,
+    timeRemaining: 40
+});
+
+  render();
+}
+
+function updateStatus(index) {
+  if (tasks[index].timeRemaining > 0) {
+    tasks[index].timeRemaining -= 20;
+  }
+  render();
+}
+
+function render() {
+  const table = document.getElementById("table");
+  table.innerHTML = `
+    <tr>
+      <th>Task</th>
+      <th>Assigned To</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  tasks.forEach((task, i) => {
+    table.innerHTML += `
+      <tr>
+        <td>${task.name}</td>
+        <td>${task.assigned}</td>
+     <td>
+  ${task.timeRemaining > 0 
+    ? task.timeRemaining + " mins to go" 
+    : "Completed"}
+</td>
+        <td>
+          <button onclick="updateStatus(${i})">Update</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  // Simple "AI Prediction"
+  const remaining = tasks.filter(t => t.status !== "Completed").length;
+  document.getElementById("prediction").innerText =
+    remaining === 0
+      ? "All tasks completed "
+      : `Prediction: ${remaining} tasks remaining, expected completion soon`;
+}
+</script>
+
+</body>
+</html>

@@ -60,7 +60,10 @@ function addTask() {
   const time = document.getElementById("tTime").value;
 
   let assigned = "None";
-
+// --- AI INTEGRATION POINT ---
+  // TODO: Replace this basic loop with a Google Gemini API call.
+  // Gemini will analyze volunteer skills, current workload, and 
+  // location proximity to find the most 'intelligent' match.
   for (let v of volunteers) {
     if (v.time === time) {
       assigned = v.name;
@@ -114,6 +117,10 @@ function render() {
   });
 
   // Simple "AI Prediction"
+  // --- AI PREDICTIVE ANALYSIS ---
+  // TODO: Use Gemini to analyze real-time completion speeds.
+  // The AI will predict potential delays based on past performance 
+  // and suggest 'Self-Healing' re-routing before a crisis occurs.
   const remaining = tasks.filter(t => t.status !== "Completed").length;
   document.getElementById("prediction").innerText =
     remaining === 0
